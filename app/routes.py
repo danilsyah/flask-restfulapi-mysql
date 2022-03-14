@@ -10,3 +10,7 @@ def index():
 def dosens():
     return DosenController.index()
 
+
+@app.route('/dosen/<id>', methods=['GET'])
+def dosensDetail(id):
+    return DosenController.detail(id)
