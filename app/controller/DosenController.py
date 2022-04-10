@@ -32,7 +32,7 @@ def singleObject(data):
     
     return data
 
-
+# menampilkan mahasiswa dengan dosen yang sama
 def detail(id):
     try:
         dosen = Dosen.query.filter_by(id=id).first()
@@ -81,6 +81,8 @@ def formatMahasiswa(data):
         
     return array
 
+
+# insert data dosen
 def save():
     try:
         nidn = request.form.get('nidn')
@@ -88,10 +90,75 @@ def save():
         phone = request.form.get('phone')
         alamat = request.form.get('alamat')
         
+        input = [
+            {
+                'nidn'  : nidn,
+                'nama'  : nama,
+                'phone' : phone,
+                'alamat': alamat
+            }
+        ]
+        
         data_dosen = Dosen(nidn=nidn, nama=nama, phone=phone, alamat=alamat)
         db.session.add(data_dosen)
         db.session.commit()
         
-        return response.success("","Data Dosen Berhasil di tambahkan")
+        return response.success(input,"Data Dosen Berhasil di tambahkan")
+    except Exception as e:
+        print(e)
+        
+
+# update data dosen berdasarkan id
+def ubah(id):
+    try:
+        nidn = request.form.get('nidn')
+        nama = request.form.get('nama')
+        phone = request.form.get('phone')
+        alamat = request.form.get('alamat')
+        
+        input = [
+            {
+                'nidn':nidn,
+                'nama':nama,
+                'phone':phone,
+                'alamat':alamat
+            }
+        ]
+        
+        dosen = Dosen.query.filter_by(id=id).first()
+        
+        dosen.nidn = nidn
+        dosen.nama = nama
+        dosen.phone = phone
+        dosen.alamat = alamat
+        
+        db.session.commit()
+        
+        return response.success(input, 'Sukses update data dosen!')
+    except Exception as e:
+        print(e)
+
+
+# hapus data dosen berdasarkan id
+def hapus(id):
+    try:
+        dosen = Dosen.query.filter_by(id=id).first()
+        if not dosen:
+            return response.badRequest([], "Data Dosen Kosong")
+        
+        
+        data = [
+            {
+                'nidn' : dosen.nidn,
+                'nama' : dosen.nama,
+                'phone' : dosen.phone,
+                'alamat' : dosen.alamat
+            }
+        ]
+        
+        db.session.delete(dosen)
+        db.session.commit()
+        
+        return response.success(data, "Data Dosen Berhasil Di Hapus")
     except Exception as e:
         print(e)
