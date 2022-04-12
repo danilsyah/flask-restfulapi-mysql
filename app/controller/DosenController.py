@@ -2,7 +2,9 @@ from app.model.dosen import Dosen
 from app.model.mahasiswa import Mahasiswa
 
 from app import response, app, db
-from flask import request
+from flask import request, jsonify,abort
+
+import math
 
 def index():
     try:
@@ -99,6 +101,12 @@ def save():
             }
         ]
         
+        # cek validasi apakah data nomor nidn sudah ada di database
+        nidn_dosen_exist = Dosen.query.filter_by(nidn=nidn).first()
+        if nidn_dosen_exist :
+            return response.badRequest(input, "Nomor NIDN sudah ada")
+        
+        
         data_dosen = Dosen(nidn=nidn, nama=nama, phone=phone, alamat=alamat)
         db.session.add(data_dosen)
         db.session.commit()
@@ -160,5 +168,72 @@ def hapus(id):
         db.session.commit()
         
         return response.success(data, "Data Dosen Berhasil Di Hapus")
+    except Exception as e:
+        print(e)
+        
+
+# page pagination
+def get_pagination(cls, url, start, limit):
+    # ambil data select query
+    results = cls.query.all()
+    # ubah format data
+    data = formatarray(results)
+    # hitung jumlah data
+    count = len(data)
+    
+    obj = {}
+    
+    if count < start:
+        obj['success'] = False
+        obj['message'] = "Page yang dipilih melewati batas total data!"
+        return obj
+    else:
+        obj['success'] = True
+        obj['start_page'] = start
+        obj['per_page'] = limit
+        obj['total_data'] = count
+        obj['total_page'] = math.ceil(count/limit)
+        
+        # previous link
+        if start == 1:
+            obj['previous'] = ''
+        else:
+            start_copy = max(1, start-limit)
+            limit_copy = start - 1
+            obj['previous'] = url + f'?start={start_copy}&limit={limit_copy}'
+            
+        # next link
+        if start + limit > count:
+            obj['next'] = ''
+        else:
+            start_copy = start + limit
+            obj['next'] = url + f'?start={start_copy}&limit={limit}'
+            
+        obj['result'] = data[(start - 1): (start - 1 + limit)]
+        return obj
+    
+# function paging
+def paginate():
+    # ambil parameter get
+    # sample http://127.0.0.1:5000/dosen?page=1
+    
+    start = request.args.get('start')
+    limit = request.args.get('limit')
+    
+    try:
+        if start == None or limit == None:
+            return jsonify(get_pagination(
+                Dosen, 
+                'http://127.0.0.1:5000/api/dosens/page',
+                start=request.args.get('start', 1),
+                limit=request.args.get('limit', 3)
+            ))
+        else:
+            return jsonify(get_pagination(
+                Dosen,
+                'http://127.0.0.1:5000/api/dosens/page',
+                start=int(start),
+                limit=int(limit)
+            ))
     except Exception as e:
         print(e)

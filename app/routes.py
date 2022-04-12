@@ -54,3 +54,8 @@ def logins():
 @jwt_required()
 def uploads():
     return UserController.upload()
+
+# endpoint paging
+@app.route('/api/dosens/page', methods=['GET'])
+def pagination():
+    return DosenController.paginate()
