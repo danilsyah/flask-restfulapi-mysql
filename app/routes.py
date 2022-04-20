@@ -1,6 +1,7 @@
 from app import app, response
 from app.controller import DosenController
 from app.controller import UserController
+from app.controller import MahasiswaContorller
 from flask import request
 from flask import jsonify
 from flask_jwt_extended import get_jwt_identity
@@ -22,30 +23,8 @@ def protected():
 def admins():
     return UserController.create_user_admin()
 
-
-# endpoint view all dosen dan endpoint Insert Data Dosen
-@app.route('/dosens', methods=['GET','POST'])
-@jwt_required()
-def dosens():
-    if request.method == 'GET':
-        return DosenController.index()
-    else:
-        return DosenController.save()
-
-
-# endpoint view dosen mahasiswa, ubah data dosen dan hapus data dosen
-@app.route('/dosens/<id>', methods=['GET','PUT', 'DELETE'])
-def dosensDetail(id):
-    if request.method == 'GET':
-        return DosenController.detail(id)
-    elif request.method == 'PUT':
-        return DosenController.ubah(id)
-    elif request.method == 'DELETE':
-        return DosenController.hapus(id)
-    
-
 # endpoint login
-@app.route('/logins', methods=['POST'])
+@app.route('/login', methods=['POST'])
 def logins():
     return UserController.login()
 
@@ -55,7 +34,48 @@ def logins():
 def uploads():
     return UserController.upload()
 
+
+# ========= route endpoint dosen =======================
+
+# endpoint view all dosen dan endpoint Insert Data Dosen
+@app.route('/dosens', methods=['GET','POST'])
+# @jwt_required()
+def dosens():
+    if request.method == 'GET':
+        return DosenController.index()
+    else:
+        return DosenController.save()
+
+
+# endpoint view dosen mahasiswa detail, ubah data dosen dan hapus data dosen
+@app.route('/dosens/<id>', methods=['GET','PUT', 'DELETE'])
+def dosensDetail(id):
+    if request.method == 'GET':
+        return DosenController.detail(id)
+    elif request.method == 'PUT':
+        return DosenController.ubah(id)
+    elif request.method == 'DELETE':
+        return DosenController.hapus(id)
+
 # endpoint paging
 @app.route('/api/dosens/page', methods=['GET'])
 def pagination():
     return DosenController.paginate()
+
+
+# ======================= route endpoint mahasiswa =====================
+@app.route('/mahasiswas', methods=['GET','POST'])
+def mhs_index():
+    if request.method == 'GET':
+        return MahasiswaContorller.index()
+    elif request.method == 'POST':
+        return MahasiswaContorller.save()
+    
+
+# endpoint update mahasiswa
+@app.route('/mahasiswas/<id>', methods=['PUT','DELETE'])
+def mhs_update(id):
+    if request.method == 'PUT':
+        return MahasiswaContorller.ubah(id)
+    elif request.method == 'DELETE':
+        return MahasiswaContorller.hapus(id)
