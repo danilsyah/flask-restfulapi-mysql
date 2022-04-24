@@ -1,15 +1,15 @@
-# Mini App CRUD Rest API + MySQL + ReactJS
+# Mini App CRUD Rest API Integrate MySQL
 
-## Backend
+## Tech
    - Framework Flask Python
-   - DBMS MySQL
-   - Rest API
-   - ORM SQLAlchemy
+   - DBMS : MySQL
+   - Web Service : Rest API
+   - ORM : SQLAlchemy
    - Webserver : Werkzeug
-   - Testting API : POSTMAN
-   - Middleware : JWT (Json Web Token)
+   - Tool Testing API : POSTMAN
+   - Middleware Auth : JWT (Json Web Token)
 
-## Depedencies / package / module
+## Dependencies / package / module
     - Flask              2.1.1
     - Flask-SQLAlchemy   2.5.1
     - python-dotenv      0.20.0
@@ -20,12 +20,14 @@
 ## Run App
     - create database mysql : db_belajarflask
     - create virtual environment & in env
+    - install package depedencies
+    - init migrate : flask db init
     - migration tabel : flask db migrate
     - push migrate to database : flask db upgrade
     - flask run
 
 
-## Fitur APP
+## Fitur :
    - Login
    - Generate JWT
    - Data Dosen
