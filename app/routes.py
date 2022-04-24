@@ -39,7 +39,7 @@ def uploads():
 
 # endpoint view all dosen dan endpoint Insert Data Dosen
 @app.route('/dosens', methods=['GET','POST'])
-# @jwt_required()
+@jwt_required()
 def dosens():
     if request.method == 'GET':
         return DosenController.index()
@@ -64,7 +64,9 @@ def pagination():
 
 
 # ======================= route endpoint mahasiswa =====================
+# endpoint menampilkan data mahasiswa dan menambahkan data mahasiswa
 @app.route('/mahasiswas', methods=['GET','POST'])
+@jwt_required()
 def mhs_index():
     if request.method == 'GET':
         return MahasiswaContorller.index()
@@ -74,6 +76,7 @@ def mhs_index():
 
 # endpoint update mahasiswa
 @app.route('/mahasiswas/<id>', methods=['PUT','DELETE'])
+@jwt_required()
 def mhs_update(id):
     if request.method == 'PUT':
         return MahasiswaContorller.ubah(id)
